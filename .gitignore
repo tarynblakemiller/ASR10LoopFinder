@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+**/Builds
+**/JuceLibraryCode
+
 # Compiled Object files
 *.slo
 *.lo
