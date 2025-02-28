@@ -65,9 +65,10 @@ private:
     int samplesPerBlock = 0; //block size provided by the host
     juce::AudioBuffer<float> sampleBuffer; //buffer to hold our loaded sample
     bool sampleLoaded = false; //tracks if sample is loaded
-    int playPosition = 0; //tracks current position in the loop
+    int playPosition = 0.0f; //tracks current position in the loop - float for smooth playback
     int loopStartSample = 0; //sample index of loop start
     int loopEndSample = 0; //sample index of loop end
     void loadSample(const juce::File& file); //method to load audio file
+//    void findLoopPoints(); //detects loop points
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ASR10LoopFinderAudioProcessor)
 };

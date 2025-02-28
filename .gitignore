@@ -1,8 +1,33 @@
 # Prerequisites
-*.d
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
 
-**/Builds
-**/JuceLibraryCode
+# Xcode
+## User settings
+xcuserdata/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+
+## Build generated
+build/
+DerivedData/
+*.build/
+
+# JUCE specific
+**/Builds/
+**/JuceLibraryCode/
+**/.vscode/
+**/Binaries/
+Builds/
+JuceLibraryCode/
 
 # Compiled Object files
 *.slo
