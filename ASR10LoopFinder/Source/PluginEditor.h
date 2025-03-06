@@ -21,13 +21,17 @@ public:
     ~ASR10LoopFinderAudioProcessorEditor() override;
 
     //==============================================================================
-    void paint (juce::Graphics&) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
 
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    ASR10LoopFinderAudioProcessor& audioProcessor;
+    ASR10LoopFinderAudioProcessor& processor;
+    juce::Slider startFader, endFader;
+    juce::ToggleButton autoLoopToggle;
+    juce::Rectangle<float> waveformBounds; // For waveform display
+    juce::TextButton loadButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ASR10LoopFinderAudioProcessorEditor)
 };

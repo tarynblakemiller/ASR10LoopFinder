@@ -6,6 +6,8 @@
               pluginManufacturerCode="TMIL" pluginCode="LPSP">
   <MAINGROUP id="MYYCyt" name="ASR10LoopFinder">
     <GROUP id="{9AFDC190-D7B2-8EBC-634C-7D0E383B2665}" name="Source">
+      <FILE id="b6PAwQ" name="LoopFinder.h" compile="0" resource="0" file="Source/LoopFinder.h"/>
+      <FILE id="I96Y5Y" name="LoopFinder.cpp" compile="1" resource="0" file="Source/LoopFinder.cpp"/>
       <FILE id="jVwwyB" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="YHLORK" name="PluginProcessor.h" compile="0" resource="0"
