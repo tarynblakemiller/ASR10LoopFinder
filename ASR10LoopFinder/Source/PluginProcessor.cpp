@@ -41,26 +41,31 @@ ASR10LoopFinderAudioProcessor::~ASR10LoopFinderAudioProcessor()
 //==============================================================================
 void ASR10LoopFinderAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    //standard initialization of dsp
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.sampleRate = sampleRate;
+    spec.numChannels = getTotalNumOutputChannels();
+    
+    
     DBG("prepareToPlay start: playPosition=" + juce::String(playhead));
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    this->sampleRate = sampleRate;
-//    this->samplesPerBlock = samplesPerBlock;
-    juce::File sampleFile("/Users/tarynblakemiller/Desktop/___2025_BREAKS/TS_BD_116_can_break_brushes.wav");
+    //    this->sampleRate = sampleRate;
+    //    this->samplesPerBlock = samplesPerBlock;
+    //    juce::File sampleFile("/Users/tarynblakemiller/Desktop/___2025_BREAKS/TS_BD_116_can_break_brushes.wav");
     
-    if (sampleFile.existsAsFile()) {
-        loadSample(sampleFile);
-        DBG("Sample loaded from: " + sampleFile.getFullPathName());
-    } else {
-        DBG("Sample file not found: " + sampleFile.getFullPathName());
-        // Maybe show a file chooser dialog here or load a default sample
-    }
-//    loadSample(juce::File("/Users/tarynblakemiller/Desktop/___2025_BREAKS/TS_BD_116_can_break_brushes.wav"));
-//    DBG("prepareToPlay start: playPosition=" + juce::String(playhead));
+    //    if (sampleFile.existsAsFile()) {
+    //        loadSample(sampleFile);
+    //        DBG("Sample loaded from: " + sampleFile.getFullPathName());
+    //    } else {
+    //        DBG("Sample file not found: " + sampleFile.getFullPathName());
+    // Maybe show a file chooser dialog here or load a default sample
+    //    }
+    
     if (sampleLoaded)
     {
         findLoopPoints(); // Recompute loop points if sample rate changes
-        thumbnail.setSource(new juce::FileInputSource(juce::File("/Users/tarynblakemiller/Desktop/___2025_BREAKS/TS_BD_116_can_break_brushes.wav")));
+        //        thumbnail.setSource(new juce::FileInputSource(juce::File("/Users/tarynblakemiller/Desktop/___2025_BREAKS/TS_BD_116_can_break_brushes.wav")));
     }
 }
 
@@ -92,18 +97,6 @@ void ASR10LoopFinderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffe
         return;
     }
     
-    //    int numSamples = 0;
-    //    int sampleLength = 0;
-    //    int loopStart = 0;
-    //    int loopEnd = 0;
-    
-    
-    //    if (sampleLoaded)
-    //    {
-    //        numSamples = buffer.getNumSamples();
-    //        sampleLength = sampleBuffer.getNumSamples();
-    //        loopStart = static_cast<int>(0.25 * sampleLength);
-    //        loopEnd = static_cast<int>(0.99 * sampleLength);
     int loopLength = loopEndSample - loopStartSample;
     static int playhead = 0;
     
@@ -118,7 +111,7 @@ void ASR10LoopFinderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffe
         }
     }
     playhead = (playhead + buffer.getNumSamples()) % loopLength;//update playhead;
-    //    }
+    
 }
 
 void ASR10LoopFinderAudioProcessor::loadSample(const juce::File& file)
@@ -131,7 +124,7 @@ void ASR10LoopFinderAudioProcessor::loadSample(const juce::File& file)
         reader->read(&sampleBuffer, 0, numSamples, 0, true, true); //read into buffer
         sampleLoaded = true;
         findLoopPoints(); //sets loop points after loading
-        thumbnail.setSource(new FileInputSource(file)); // Update thumbnail
+        thumbnail.setSource(new juce::FileInputSource(file)); // Update thumbnail
         DBG("Sample loaded: " + file.getFullPathName() +
             ", channels: " + juce::String(reader->numChannels) +
             ", samples: " + juce::String(numSamples));
@@ -162,11 +155,6 @@ void ASR10LoopFinderAudioProcessor::findLoopPoints()
     zeroCrossings = finder.getAllZeroCrossings();
     DBG("Found " + juce::String(zeroCrossings.size()) + " zero crossings");
     
-    //    auto [defaultStart, defaultEnd] = finder.findDefaultLoopPoints();
-    //    loopStartSample = defaultStart;
-    //    loopEndSample = defaultEnd;
-    
-    // Set defaults to 25% and 99% of sample length
     int sampleLength = sampleBuffer.getNumSamples();
     loopStartSample = static_cast<int>(0.25 * sampleLength); // ~91241 for 364966
     loopEndSample = static_cast<int>(0.99 * sampleLength);   // ~361316 for 364966
@@ -181,6 +169,9 @@ void ASR10LoopFinderAudioProcessor::findLoopPoints()
             loopEndSample = jmin(sampleLength - 1, loopStartSample + static_cast<int>(sampleRate * 0.1));
         }
     }
+    
+    loopStartSample = jlimit(0, sampleLength - 1, loopStartSample);
+    loopEndSample = jlimit(loopStartSample + 1, sampleLength - 1, loopEndSample);
     
     DBG("loopStartSample: " + juce::String(loopStartSample) +
         ", loopEndSample: " + juce::String(loopEndSample) +

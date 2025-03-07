@@ -79,9 +79,11 @@ public:
     int loopEndSample = -1; //sample index of loop end
     int playhead = 0.0f; //tracks current position in the loop - float for smooth playback
     
+    juce::File root, savedFile;
     
 private:
     //==============================================================================
+    juce::dsp::ProcessSpec spec;
     bool sampleLoaded = false; //tracks if sample is loaded
     juce::AudioBuffer<float> sampleBuffer; //buffer to hold our loaded sample
     double sampleRate = 44100.0; //current sample rate (ex 44100 hz)
@@ -93,6 +95,7 @@ private:
     bool autoLoop = true;
     juce::AudioThumbnail thumbnail{ 512, formatManager, thumbnailCache }; // For waveform display
     juce::AudioThumbnailCache thumbnailCache{ 5 };
+    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ASR10LoopFinderAudioProcessor)
 };
